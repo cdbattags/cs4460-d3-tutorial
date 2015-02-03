@@ -1,31 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
     <head>
         <meta charset="utf-8">
-        <title>Honework 6</title>
+        <title>Homework 6 - Son Tran and Christian Battaglia</title>
 
         <!-- Stylesheets -->
         <link rel="stylesheet" type="text/css" href="style.css">
         
         <!-- Script -->
-        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script type="text/javascript" src="d3/d3.js"></script>
     </head>
 
-
     <body>
-        <svg class="chart"></svg>
-        <script type="text/javascript"> //src = d3/d3.js?
+        <h3>The relationship between base experience and BMI</h3>
+        <script type="text/javascript">
 
             //##############    1    ####################
             //Setting the size of our canvas
-            var width = 780; 
-            var height = 460;
 
             var margin = {top: 20, right: 20, bottom: 30, left: 40},
-              width = 960 - margin.left - margin.right,
-              height = 500 - margin.top - margin.bottom; 
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom; 
             
             // setup x 
             var xValue = function(d) { return d["base_ex"];}, // data -> value
@@ -107,8 +102,20 @@
                       tooltip.transition()
                            .duration(200)
                            .style("opacity", .9);
-                      tooltip.html(d["identifier"] + "<br/> (" + xValue(d) 
-                      + ", " + yValue(d) + ")")
+
+                      var output = "Pokemon: " + d["identifier"] + "<br/>Base Experience: " + xValue(d) 
+                      + "<br/>BMI: " + yValue(d).toFixed(2) + "<br/>Rating: ";
+                      var rating;
+                      if (yValue(d) < 18.5) {
+                        rating = "Underweight";
+                      } else if (yValue(d) >= 18.5 & yValue(d) < 25) {
+                        rating = "Normal weight";
+                      } else if (yValue(d) >=25 & yValue(d) < 30) {
+                        rating = "Overweight";
+                      } else {
+                        rating = "Obesity";
+                      }
+                      tooltip.html(output + rating)
                            .style("left", (d3.event.pageX + 5) + "px")
                            .style("top", (d3.event.pageY - 28) + "px");
                   })
@@ -116,12 +123,8 @@
                       tooltip.transition()
                            .duration(500)
                            .style("opacity", 0);
-                  });
-
-
-              
+                  });        
             });
-
         </script>
     </body>
 </html>

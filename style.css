@@ -1,26 +1,11 @@
-.chart {
-/* Adding a background to our canvas */
-  background: aqua;
-}
-
-.chart rect {
-  fill: steelblue;
-}
-
-.chart text {
-  fill: white;
-  font: 10px sans-serif;
-  text-anchor: middle;
-}
-
- text.xText{
-  fill: black;
-  font: 10px sans-serif;
-  text-anchor: middle;
-}
-
 body {
-  font: 11px sans-serif;
+  font: 18px sans-serif;
+}
+
+text.xText{
+  fill: black;
+  font: 15px sans-serif;
+  text-anchor: middle;
 }
 
 .axis path,
@@ -34,9 +19,3 @@ body {
   stroke: #000;
 }
 
-.tooltip {
-  position: absolute;
-  width: 200px;
-  height: 28px;
-  pointer-events: none;
-}
