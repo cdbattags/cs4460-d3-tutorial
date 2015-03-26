@@ -1,133 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Homework 6 - Son Tran and Christian Battaglia</title>
+  <head>
+    <meta charset="utf-8">
+    <title>Homework 6 - Son Tran and Christian Battaglia</title>
 
-        <!-- Stylesheets -->
-        <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="style.css">
         
-        <!-- Script -->
-        <script type="text/javascript" src="d3/d3.js"></script>
-    </head>
+    <!-- Script -->
+    <script type="text/javascript" src="d3/d3.js"></script>
+  </head>
 
-    <body>
-        <h3>The relationship between base experience and BMI</h3>
-        <script type="text/javascript">
-            var margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom; 
-            
-            var xValue = function(d) { return d["base_ex"];},
-            xScale = d3.scale.linear().range([0, width]),
-            xMap = function(d) { return xScale(xValue(d));},
-            xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+  <body>
+    <h3>The relationship between base experience and BMI</h3>
+    <script type="text/javascript">
+      var margin = {top: 20, right: 20, bottom: 30, left: 40},
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom; 
+      
+      var xValue = function(d) { return d["base_ex"];},
+      xScale = d3.scale.linear().range([0, width]),
+      xMap = function(d) { return xScale(xValue(d));},
+      xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
-            var yValue = function(d) { return d["BMI"];},
-            yScale = d3.scale.linear().range([height, 0]),
-            yMap = function(d) { return yScale(yValue(d));},
-            yAxis = d3.svg.axis().scale(yScale).orient("left");
+      var yValue = function(d) { return d["BMI"];},
+      yScale = d3.scale.linear().range([height, 0]),
+      yMap = function(d) { return yScale(yValue(d));},
+      yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-            var cValue = function(d) { return d["rating"];},
-                color = d3.scale.category10();
+      var cValue = function(d) { return d["rating"];},
+          color = d3.scale.category10();
 
-            var svg = d3.select("body").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-				
-            var tooltip = d3.select("body").append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 0);
+      var getRating = function(d) { return d["rating"];};
 
-            d3.csv("Pokemon.csv", function(error, data) {
-              data.forEach(function(d) {
-                d["identifier"] = d.identifier;
-                d["height"] = +(d["height"]/10);
-                d["weight"] = +(d["weight"]/10);
-                d["BMI"] = (d["weight"])/((d["height"])*(d["height"]));
-                d["base_ex"] = +(d["base_experience"]);
-                if (d["BMI"] < 18.5) {
-                  d["rating"] = "Underweight";
-                } else if (d["BMI"] >= 18.5 & d["BMI"] < 25) {
-                  d["rating"] = "Normal weight";
-                } else if (d["BMI"] >=25 & d["BMI"] < 30) {
-                  d["rating"] = "Overweight";
-                } else {
-                  d["rating"] = "Obesity";
-                }
-              });
+      var svg = d3.select("body").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+      var tooltip = d3.select("body").append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
 
-              xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-              yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+      d3.csv("Pokemon.csv", function(error, data) {
+        data.forEach(function(d) {
+          d["identifier"] = d.identifier;
+          d["height"] = +(d["height"]/10);
+          d["weight"] = +(d["weight"]/10);
+          d["BMI"] = (d["weight"])/((d["height"])*(d["height"]));
+          d["base_ex"] = +(d["base_experience"]);
+          if (d["BMI"] < 18.5) {
+            d["rating"] = "Underweight";
+          } else if (d["BMI"] >= 18.5 & d["BMI"] < 25) {
+            d["rating"] = "Normal-weight";
+          } else if (d["BMI"] >=25 & d["BMI"] < 30) {
+            d["rating"] = "Overweight";
+          } else {
+            d["rating"] = "Obesity";
+          }
+        });
 
-              svg.append("g")
-                  .attr("class", "x axis")
-                  .attr("transform", "translate(0," + height + ")")
-                  .call(xAxis)
-                .append("text")
-                  .attr("class", "label")
-                  .attr("x", width)
-                  .attr("y", -6)
-                  .style("text-anchor", "end")
-                  .text("Base Experience");
+        xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
+        yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
-              svg.append("g")
-                  .attr("class", "y axis")
-                  .call(yAxis)
-                .append("text")
-                  .attr("class", "label")
-                  .attr("transform", "rotate(-90)")
-                  .attr("y", 6)
-                  .attr("dy", ".71em")
-                  .style("text-anchor", "end")
-                  .text("BMI");
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+          .append("text")
+            .attr("class", "label")
+            .attr("x", width)
+            .attr("y", -6)
+            .style("text-anchor", "end")
+            .text("Base Experience");
 
-              svg.selectAll(".dot")
-                  .data(data)
-                .enter().append("circle")
-                  .attr("class", "dot")
-                  .attr("r", 3.5)
-                  .attr("cx", xMap)
-                  .attr("cy", yMap)
-                  .style("fill", function(d) { return color(cValue(d));}) 
-                  .on("mouseover", function(d) {
-                      tooltip.transition()
-                           .duration(200)
-                           .style("opacity", .9);
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+          .append("text")
+            .attr("class", "label")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("BMI");
 
-                      var output = "Pokemon: " + d["identifier"] + "<br/>Base Experience: " + xValue(d) 
-                      + "<br/>BMI: " + yValue(d).toFixed(2) + "<br/>Rating: " + d["rating"];
-                      tooltip.html(output)
-                           .style("left", (d3.event.pageX + 5) + "px")
-                           .style("top", (d3.event.pageY - 28) + "px");
-                  })
-                  .on("mouseout", function(d) {
-                      tooltip.transition()
-                           .duration(500)
-                           .style("opacity", 0);
-                  });
+        svg.selectAll(".dot")
+            .data(data)
+          .enter().append("circle")
+            .attr("class", "dot")
+            .attr("rating", function(d) { return getRating(d)})
+            .attr("r", 3.5)
+            .attr("cx", xMap)
+            .attr("cy", yMap)
+            .style("fill", function(d) { return color(cValue(d));}) 
+            .on("mouseover", function(d) {
+                tooltip.transition()
+                     .duration(200)
+                     .style("opacity", .9);
 
-                var legend = svg.selectAll(".legend")
-                    .data(color.domain())
-                  .enter().append("g")
-                    .attr("class", "legend")
-                    .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-                legend.append("rect")
-                    .attr("x", width - 18)
-                    .attr("width", 18)
-                    .attr("height", 18)
-                    .style("fill", color);
-
-                legend.append("text")
-                    .attr("x", width - 24)
-                    .attr("y", 9)
-                    .attr("dy", ".35em")
-                    .style("text-anchor", "end")
-                    .text(function(d) { return d;})       
+                var output = "Pokemon: " + d["identifier"] + "<br/>Base Experience: " + xValue(d) 
+                + "<br/>BMI: " + yValue(d).toFixed(2) + "<br/>Rating: " + d["rating"];
+                tooltip.html(output)
+                     .style("left", (d3.event.pageX + 5) + "px")
+                     .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition()
+                     .duration(500)
+                     .style("opacity", 0);
             });
-        </script>
-    </body>
+
+          var legend = svg.selectAll(".legend")
+              .data(color.domain())
+            .enter().append("g")
+              .attr("class", "legend")
+              .attr("legend-rating", function(d) {return d;})
+              .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+          
+          // I know this is jank af
+
+          svg.selectAll("[legend-rating=Underweight]").on("mouseover", function(d) {
+            svg.selectAll(".dot").transition()
+                .duration(100)
+                .style("opacity", 0);
+            svg.selectAll("[rating=Underweight]").transition()
+                .duration(200)
+                .style("opacity", 1);
+          });
+
+          svg.selectAll("[legend-rating=Underweight]").on("mouseout", function(d) {
+            svg.selectAll(".dot").transition()
+                .duration(100)
+                .style("opacity", 1);
+          });
+
+          svg.selectAll("[legend-rating=Overweight]").on("mouseover", function(d) {
+            svg.selectAll(".dot").transition()
+                .duration(100)
+                .style("opacity", 0);
+            svg.selectAll("[rating=Overweight]").transition()
+                .duration(200)
+                .style("opacity", 1);
+          });
+
+          svg.selectAll("[legend-rating=Overweight]").on("mouseout", function(d) {
+            svg.selectAll(".dot").transition()
+                .duration(100)
+                .style("opacity", 1);
+          });
+
+          svg.selectAll("[legend-rating=Normal-weight]").on("mouseover", function(d) {
+            svg.selectAll(".dot").transition()
+                  .duration(100)
+                  .style("opacity", 0);
+            svg.selectAll("[rating=Normal-weight]").transition()
+                  .duration(200)
+                  .style("opacity", 1);
+          });
+
+          svg.selectAll("[legend-rating=Normal-weight]").on("mouseout", function(d) {
+            svg.selectAll(".dot").transition()
+                .duration(100)
+                .style("opacity", 1);
+          });
+
+          svg.selectAll("[legend-rating=Obesity]").on("mouseover", function(d) {
+            svg.selectAll(".dot").transition()
+                  .duration(100)
+                  .style("opacity", 0);
+            svg.selectAll("[rating=Obesity]").transition()
+                  .duration(200)
+                  .style("opacity", 1);
+          });
+
+          svg.selectAll("[legend-rating=Obesity]").on("mouseout", function(d) {
+            svg.selectAll(".dot").transition()
+                  .duration(100)
+                  .style("opacity", 1);
+          });
+
+          legend.append("rect")
+              .attr("x", width - 18)
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", color);
+
+          legend.append("text")
+              .attr("x", width - 24)
+              .attr("y", 9)
+              .attr("dy", ".35em")
+              .style("text-anchor", "end")
+              .text(function(d) { return d;})       
+      });
+    </script>
+  </body>
 </html>
